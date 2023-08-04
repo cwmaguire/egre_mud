@@ -1,10 +1,12 @@
-G.Erl.S.H.M.U.D - Graph of ERLang Stream Handlers Multi-User Dungeon
+EGRE_MUD - A MUD engine built on EGRE, the Erlang Graph Rules Engine
 
-(Actually, it's more like a distributed rules engine than stream handlers)
+EGRE_MUD was split off of GERLSHMUD and is just the MUD engine. It will
+use EGRE for the rules engine and will not implement anything being a
+test MUD.
 
 How it Works (short version):
 All MUD elements (rooms, characters, attributes, weapons, spells) are
-processes.
+rule engine processes.
 Processes live in a graph.
 Events propagate through the graph.
 Events succeed or fail.
@@ -25,36 +27,7 @@ if anything, comes back.
 Video on how it works:
 https://www.youtube.com/watch?v=dcuv_M4Po0g
 
-How it Works in Detail:
-
-GERLSHMUD is a graph of asynchronous processes representing every aspect
-of a game world: rooms, spells, attributes, attacks, players, etc. Events
-in the MUD flow through the graph and touch one process at a time.
-Each process takes in events, modifies it's internal state and either
-passes on the event or triggers one or more new events.
-
-Any event in the MUD is first proposed as an attempt. Attempts are passed
-from process to process through the graph.  Each process can either fail the
-attempt with a reason or allow the attempt to succeed. Each process can also
-subscribe to the event to be notified of the result. Processes can also resend
-a different attempt in place of an original or pass on a modified copy of the
-original.
-
-Events in the MUD flow through the process graph without locking up the world.
-Each process that handles the event will handle it independently of all other
-processes. A process always has the only copy of the event and no locks are
-needed. No process will halt processing to communicate with another process.
-This means that all information about each event must be contained in the event
-itself.
-
-Since processes do not communicate directly, and since all processes
-receive all (nearby) events, any process can be added anywhere in the
-graph and begin to participate in every (nearby) event. Each process
-listens for particluar events and so processes that cooperate to resolve
-an event will need to agree on a protocol to communicate via the process
-graph.
-
-Example:
+Example using EGRE graph rule engine processes:
 
 A player types "go north".
 
@@ -97,17 +70,6 @@ Why go to all this trouble to have a single object handle a single event at
 a time? Concurrency and parallelism. If an object can handle a message atomically
 then we get several benefits:
 
-a) The objects don't need to be on the same machine. A character can live on
-machine A while a room is on machine B. Erlang makes it a cinch to send the
-messages to different machines.
-
-b) Every object could potentially be handling a different message at the same time.
-Rather than lock up hundreds of processes to reconcile a battle between multiple
-characters many events can be happening at the same time.
-
-c) No event is ever modified by two processes at once. No process needs to acquire
-any locks which means no deadlocks and no race conditions.
-
 There are downsides though: we have no "transactions" to make sure that information
 is still valid by the time it is acted upon. A player might decide to go north
 while a door is unlocked but by the time they actually move the door is locked.
@@ -123,7 +85,7 @@ See https://github.com/zxq9/erlmud for a potentially more successful MUD
 in Erlang by someone who actually knows what they're talking about.
 
 
-Some older videos that explain GERLSHMUD:
+Some older videos that explain EGRE_MUD (formerly GERLSHMUD):
 
 Jun 20, 2015 - How attacks work: https://youtu.be/oSG1EXPMJVw
 Jun 20, 2015 - How messages work: https://youtu.be/6t7YSnSBaJ8
