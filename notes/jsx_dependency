@@ -1,0 +1,25 @@
+jsx dependency
+
+┏━━━━━━━━━━━━━━━━┓
+┃   2020-05-05   ┃
+┗━━━━━━━━━━━━━━━━┛
+
+I moved the jsx dependency to a _bak directory and re-downloaded jsx
+in case the error in my code was caused by some mismatch between
+Erlang 22.3 and the old version of the dependency I had.
+
+I had to make a copy of the Makefile.orig.mk and rename it Makefile
+so that erlang.mk would use the Makefile, which calls out to Rebar3.
+
+I also updated:
+Erlang (22.3 / erts 10.7),
+  Kerl
+
+erlang.mk (2020.03.05-14-g89f2eca),
+  "make erlang-mk"
+
+rebar3 (*3.3.5+build.3757.ref86e883b),
+  rebar3 local upgrade
+
+elixir (1.10.3)
+    kiex
