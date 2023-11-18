@@ -1,9 +1,9 @@
 %% Copyright 2022, Chris Maguire <cwmaguire@protonmail.com>
--module(gerlshmud_event_log).
+-module(egremud_event_log).
 
 -behaviour(gen_server).
 
--include("include/gerlshmud.hrl").
+-include("egremud.hrl").
 
 -export([start_link/0]).
 -export([log/2]).

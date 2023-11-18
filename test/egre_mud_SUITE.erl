@@ -1,9 +1,8 @@
 %% Copyright 2022, Chris Maguire <cwmaguire@protonmail.com>
--module(gerlshmud_SUITE).
+-module(egre_mud_SUITE).
 -compile(export_all).
 
--include("gerlshmud.hrl").
--include("gerlshmud_test_worlds.hrl").
+-include("egremud.hrl").
 -include_lib("eunit/include/eunit.hrl").
 
 -define(WAIT100, receive after 100 -> ok end).
@@ -16,54 +15,25 @@
     %[player_resource_wait,
      %player_move].
 all() ->
-    [player_move,
-     player_move_fail,
-     player_move_exit_locked,
-     player_get_item,
-     player_drop_item,
-     character_owner_add_remove,
-     player_attack,
-     player_resource_wait,
-     attack_with_modifiers,
-     one_sided_fight,
-     counterattack_behaviour,
-     stop_attack_on_move,
-     player_wield,
-     player_wield_first_available,
-     player_wield_missing_body_part,
-     player_wield_wrong_body_part,
-     player_wield_body_part_is_full,
-     player_remove,
-     look_player,
-     look_room,
-     look_item,
-     set_character,
-     cast_spell,
-     decompose,
-     search_character].
+    [
+    ].
 
 init_per_testcase(_, Config) ->
-    %gerlshmud_dbg:add(gerlshmud_object, handle_cast_),
-    %gerlshmud_dbg:add(gerlshmud_event_log, add_index_details),
-
-    %dbg:tracer(),
-    %dbg:tpl(gerlshmud_event_log, '_', '_', [{'_', [], [{exception_trace}]}]),
+    {ok, _Started} = application:ensure_all_started(egre),
 
     Port = ct:get_config(port),
-    application:load(gerlshmud),
-    application:set_env(gerlshmud, port, Port),
-    {ok, _Started} = application:ensure_all_started(gerlshmud),
-    {atomic, ok} = mnesia:clear_table(object),
-    {ok, _Pid} = gerlshmud_test_socket:start(),
+    application:load(egremud),
+    application:set_env(egremud, port, Port),
+    {ok, _Started} = application:ensure_all_started(egremud),
+
+    {ok, _Pid} = egremud_test_socket:start(),
     TestObject = spawn_link(fun mock_object/0),
-    gerlshmud_index:put([{pid, TestObject}, {id, test_object}]),
+    egremud_index:put([{pid, TestObject}, {id, test_object}]),
     [{test_object, TestObject} | Config].
 
 end_per_testcase(_, _Config) ->
-    ct:pal("~p stopping gerlshmud~n", [?MODULE]),
-    receive after 1000 -> ok end,
     gerlshmud_test_socket:stop(),
-    application:stop(gerlshmud).
+    application:stop(egremud).
 
 
 all_vals(Key, Obj) ->

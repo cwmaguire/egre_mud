@@ -1,5 +1,5 @@
 %% Copyright 2022, Chris Maguire <cwmaguire@protonmail.com>
--module(gerlshmud_conn_sup).
+-module(egremud_conn_sup).
 -behaviour(supervisor).
 
 -export([start_link/0]).

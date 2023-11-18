@@ -11,24 +11,9 @@
     %sasl,
     %mnesia,
     cowboy,
-    jsx
+    jsx,
+    egre
   ]},
-  {mod, {gerlshmud_app, []}},
-  {env, [{corpse_cleanup_millis, 120000}, %% 2 minutes
-         {desc_templates, [
-             {character, [<<"character ">>, name]},
-             {body_part, [<<"body part ">>, name]},
-             {item, [name, <<": ">>, desc]},
-             {room, [name, <<": ">>, desc]},
-             {height, [value, <<"m tall">>]},
-             {weight, [value, <<"kg">>]},
-             {race, [<<"race: ">>, value]}
-          ]},
-
-         {context_verbs, [{giant, [{hand, [{sword, <<"is wielding">>},
-                                           {gloves, <<"is wearing">>}]},
-                                   {leg, [{pants, <<"is covered by">>}]}
-                                  ]
-                          }]
-         }]}
+  {mod, {egremud_app, []}},
+  {env, []},
 ]}.

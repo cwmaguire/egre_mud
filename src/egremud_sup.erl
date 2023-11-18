@@ -1,5 +1,5 @@
 %% Copyright 2022, Chris Maguire <cwmaguire@protonmail.com>
--module(gerlshmud_sup).
+-module(egremud_sup).
 -behaviour(supervisor).
 
 -export([start_link/0]).
@@ -21,14 +21,8 @@ init([]) ->
               brutal_kill,
               supervisor,
               [gerlshmud_conn_sup]},
-             {gerlshmud_index,
-              {gerlshmud_index, start_link, []},
-              permanent,
-              brutal_kill,
-              worker,
-              [gerlshmud_index]},
-             {gerlshmud_event_log,
-              {gerlshmud_event_log, start_link, []},
+             {egremud_event_log,
+              {egremud_event_log, start_link, []},
               permanent,
               brutal_kill,
               worker,
