@@ -1,28 +1,99 @@
-Where I Left Off
+Where I Left Off - EGRE_MUD
 I need a place to track where I am for when I take long breaks.
 
-What do I _need_ for a MUD?
-x move
-x look
-- say
-x get
-x put
-x attack
-- heal
-x die
-x loot / search
-x wield
-x cast spell
-- buy / sell
-- activate quest
-- complete quest
-- resurrect
+┏━━━━━━━━━━━━━━━━┓
+┃   2023-11-17   ┃
+┗━━━━━━━━━━━━━━━━┛
+
+egre_mud should provide test connections so that mud can run it's own
+tests.
+
+┏━━━━━━━━━━━━━━━━┓
+┃   2023-08-07   ┃
+┗━━━━━━━━━━━━━━━━┛
+
+Currently we tell G to start a new object directly.
+But that's in a test. I don't actually have a working MUD.
+I think I need a small test engine that will run G and 1.
+Well, no, I just need *something* to fascilitate communicating with G and 1 so they
+don't know about each other.
+That's what the test is doing.
+
+The properties are what determines how an object behaves.
+Properties point to handlers.
+Actually, there's a property called "handlers" and the rules engine runs through them all.
+Oh, d'oh, in Erlang you can just say:
+
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+  ░
+  ░ MyModuleAtom:function_name()
+  ░
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+
+  ... that's why my handler property can just be atoms.
+  You don't need to turn the atom into a Module object (e.g. like Java) to call it.
+  The code server can look up the module by name.
+
+A MUD has a world made up of properties that point to handlers.
+
+A MUD engine can load up those properties and create an object for each, then
+link all the objects, *exactly* like I'm doing now.
+
+A MUD is two things:
+- object properties
+- object rules
+
+So the MUD-specific tests should be in EM1.
+I think I'll need to tell erlang.mk that EGRE is a test dep
+
+┏━━━━━━━━━━━━━━━━┓
+┃   2023-08-06   ┃
+┗━━━━━━━━━━━━━━━━┛
+
+How I'm thinking of organizing everything:
+G = EGRE (Graph)
+M = EGRE_MUD (MUD engine)
+1 = EGRE_MUD_1 (reference implementation MUD)
+P = Player
+
+M -- start             --> G
+M -- create start rule --> 1 *
+1 -- populate          --> G
+
+P -- connect           --> M
+M -- ?                 --> 1
+
+* 1 has to have a "start" rule.
+
+Currently gerlshmud_SUITE.erl shows that I do this:
+- call supervisor:start_child(gerlshmud_object_sup, [Id, Props])
+- get back all the IdPids
+- call gerlshmud_object:populate(Pid, IdPids) for each pid
+
+So start all the objects and get the pid for each ID, then tell all the pids
+what the ID->pid combinations are, so the properties they have with IDs can
+be replaced with pids.
+
+EGRE might need to manage tracking what IDs belong to what pids.
+Each time an object is created it can:
+- get all the pids already known
+- subscribe to events for new ID pids?
+
+I think:
+- MUD rules should be able to spawn objects
+- Somehow EGRE has to fascilitate filling in IDs with pids
+OR
+a MUD figures out a different way to link together objects
 
 ┏━━━━━━━━━━━━━━━━┓
 ┃   2023-08-04   ┃
 ┗━━━━━━━━━━━━━━━━┛
 
 First note after switching from GERLSHMUD to EGRE_MUD
+
+
+░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
 
 ┏━━━━━━━━━━━━━━━━┓
 ┃   2022-08-31   ┃
