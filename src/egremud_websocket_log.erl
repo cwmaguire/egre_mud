@@ -1,6 +1,6 @@
 %% Route drawing commands to and from a web page to an Erlang process
 %% Copyright 2022, Chris Maguire <cwmaguire@protonmail.com>
--module(gerlshmud_websocket_log).
+-module(egremud_websocket_log).
 -behaviour(cowboy_handler).
 
 -include_lib("kernel/include/logger.hrl").
@@ -32,7 +32,7 @@ websocket_init(_Type, Req, _Opts) ->
     fun(_Level, JSON) ->
         Self ! JSON
     end,
-    gerlshmud_event_log:register(Fun),
+    egremud_event_log:register(Fun),
 
     ?LOG_INFO("Websocket handler websocket_init end (~p)~n", [self()]),
     {ok, Req3, undefined}.

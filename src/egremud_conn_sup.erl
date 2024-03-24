@@ -10,9 +10,9 @@ start_link() ->
 
 init([]) ->
     Procs = [{conn_fsm,
-              {gerlshmud_conn, start_link, []},
+              {egremud_conn, start_link, []},
               transient,
               brutal_kill,
               worker,
-              [gerlshmud_conn]}],
+              [egremud_conn]}],
     {ok, {{simple_one_for_one, 1, 5}, Procs}}.

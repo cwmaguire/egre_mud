@@ -1,0 +1,19 @@
+{application, egre_mud, [
+  {description, ""},
+  {vsn, "0.1.0"},
+  {id, "git"},
+  {modules, []},
+  {registered, []},
+  {applications, [
+    kernel,
+    stdlib,
+    runtime_tools,
+    %sasl,
+    %mnesia,
+    cowboy,
+    jsx,
+    egre
+  ]},
+  {mod, {egremud_app, []}},
+  {env, []},
+]}.

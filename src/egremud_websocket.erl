@@ -1,6 +1,6 @@
 %% Route drawing commands to and from a web page to an Erlang process
 %% Copyright 2022, Chris Maguire <cwmaguire@protonmail.com>
--module(gerlshmud_websocket).
+-module(egremud_websocket).
 -behaviour(cowboy_handler).
 
 -include_lib("kernel/include/logger.hrl").
@@ -29,14 +29,14 @@ websocket_init(_Type, Req, _Opts) ->
             Req2
     end,
 
-    {ok, Conn} = supervisor:start_child(gerlshmud_conn_sup, [self()]),
+    {ok, Conn} = supervisor:start_child(egremud_conn_sup, [self()]),
 
     ?LOG_INFO("Websocket handler websocket_init end (~p)~n", [self()]),
     {ok, Req3, #state{conn = Conn}}.
 
 websocket_handle({text, Text}, Req, State = #state{conn = Conn}) ->
     ?LOG_INFO("From Websocket: {~p, ~p}~n", [text, Text]),
-    gerlshmud_conn:handle(Conn, Text),
+    egremud_conn:handle(Conn, Text),
     {ok, Req, State};
 websocket_handle({FrameType, FrameContent}, Req, State) ->
     ?LOG_INFO("From Websocket: {~p, ~p}~n", [FrameType, FrameContent]),

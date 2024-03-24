@@ -1,5 +1,5 @@
 %% Copyright 2022, Chris Maguire <cwmaguire@protonmail.com>
--module(gerlshmud_dbg).
+-module(egremud_dbg).
 
 %-export([start/0]).
 -export([add/1]).

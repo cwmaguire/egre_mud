@@ -2,8 +2,6 @@
 -module(egremud_app).
 -behaviour(application).
 
--include("egremud.hrl").
-
 -export([start/2]).
 -export([stop/1]).
 
@@ -11,19 +9,19 @@
 -define(NO_OPTIONS, []).
 
 start(_Type, _Args) ->
-    Port = case application:get_env(gerlshmud, port) of
+    Port = case application:get_env(egremud, port) of
                {ok, EnvPort} ->
                    EnvPort;
                _ ->
                    8080
            end,
 
-    Paths = [{"/", gerlshmud_websocket, ?NO_OPTIONS},
-             {"/log", gerlshmud_websocket_log, ?NO_OPTIONS},
-             {"/[...]", cowboy_static, {priv_dir, gerlshmud, "static"}}],
+    Paths = [{"/", egremud_websocket, ?NO_OPTIONS},
+             {"/log", egremud_websocket_log, ?NO_OPTIONS},
+             {"/[...]", cowboy_static, {priv_dir, egremud, "static"}}],
     Routes = [{?ANY_HOST, Paths}],
     Dispatch = cowboy_router:compile(Routes),
-    _ = cowboy:start_clear(gerlshmud_http_listener,
+    _ = cowboy:start_clear(egremud_http_listener,
                            [{port, Port}],
                            #{env => #{dispatch => Dispatch}}),
     egremud_sup:start_link().

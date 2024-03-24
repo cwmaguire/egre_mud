@@ -1,5 +1,5 @@
 %% Copyright 2022, Chris Maguire <cwmaguire@protonmail.com>
--module(gerlshmud_test_socket).
+-module(egremud_test_socket).
 -behaviour(gen_server).
 
 -export([start/0]).
@@ -30,19 +30,19 @@ messages() ->
     gen_server:call(?MODULE, messages).
 
 init(_) ->
-  {ok, Conn} = supervisor:start_child(gerlshmud_conn_sup, [self()]),
+  {ok, Conn} = supervisor:start_child(egremud_conn_sup, [self()]),
   {ok, #state{conn = Conn}}.
 
 handle_call(messages, _From, State = #state{messages = Messages}) ->
     {reply, Messages, State#state{messages = []}};
 handle_call(_Req = Text, _From, State = #state{conn = Conn}) ->
-    gerlshmud_conn:handle(Conn, Text),
+    egremud_conn:handle(Conn, Text),
     {reply, ok, State}.
 
 handle_cast(stop, State) ->
     {stop, normal, State};
 handle_cast(_Req = Text, State = #state{conn = Conn}) ->
-    gerlshmud_conn:handle(Conn, Text),
+    egremud_conn:handle(Conn, Text),
     {noreply, State}.
 
 handle_info({send, Msg}, State = #state{messages = Messages}) ->
