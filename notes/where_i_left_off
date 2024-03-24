@@ -2,6 +2,23 @@ Where I Left Off - EGRE_MUD
 I need a place to track where I am for when I take long breaks.
 
 ┏━━━━━━━━━━━━━━━━┓
+┃   2024-03-23   ┃
+┗━━━━━━━━━━━━━━━━┛
+
+I can build egre_mud.
+Now I need to test:
+- player connection
+- player login?
+  - I'm thinking the engine can reasonably handle that
+  - unless all the game logic should start and end with the MUD implementation;
+    like maybe EGRE_MUD should just be a library, and any MUD implementation
+    should handle all configuration details, like player logins.
+- send text from a connection to the graph
+- send text to a connection
+- load a rule
+  - and then make sure it's used
+
+┏━━━━━━━━━━━━━━━━┓
 ┃   2023-11-17   ┃
 ┗━━━━━━━━━━━━━━━━┛
 
