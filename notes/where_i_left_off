@@ -1,6 +1,42 @@
 Where I Left Off - EGRE_MUD
 I need a place to track where I am for when I take long breaks.
 
+EM = EGRE MUD
+E = EGRE - Erlang Graph Rules Engine
+EM1 = EGRE_MUD_1 - a reference MUD using EM
+
+   OO O o o o...      __________________ _________________
+  O     ____          |                | |               |
+ ][_n_i_| (   _EM1__  |    EGRE MUD    | |     EGRE      |
+(__________|_[______]_|________________|_|_______________|
+  0--0--0      0  0       0       0         0        0
+
+┏━━━━━━━━━━━━━━━━┓
+┃   2024-03-28   ┃
+┗━━━━━━━━━━━━━━━━┛
+
+I think I'm fine with testing the websocket manually.
+I don't want to go through the effort of figuring out how to get a programmatic
+web client to open a web socket to the server. From what I recall, I don't end
+up changing the details of the web socket much, if at all; rather, I change the
+data that I'm sending over the socket.
+
+It's the MUD _engine_ that starts the graph, not the MUD.
+
+When a MUD starts it should send its list of properties to EGRE to start them
+up. If EM1 starts up EM with props, then EM can start up E with those props.
+i.e. instead of just saying "ensure all started" from EM1 with both dependencies.
+Ideally, EM1 doesn't know about E; EM1 only knows about EM.
+
+I think with application:load(AppDescr, Distributed) I can specify
+{application, egre, [{mod, {egre_app, [{props, Props}]}}]} as the "AppSpec".
+However, this seems hacky. I'd be more comfortable just having EM1 call EM.load_props(...)
+and then EM can call E.load_props(...) and perhaps E.populate(...).
+
+So EM1 has to start everything, and then load the objects. That seems sensible.
+
+egremud.erl seems like a good place to thread object properties through to EGRE.
+
 ┏━━━━━━━━━━━━━━━━┓
 ┃   2024-03-23   ┃
 ┗━━━━━━━━━━━━━━━━┛
