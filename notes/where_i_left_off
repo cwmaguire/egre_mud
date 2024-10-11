@@ -12,6 +12,40 @@ EM1 = EGRE_MUD_1 - a reference MUD using EM
   0--0--0      0  0       0       0         0        0
 
 ┏━━━━━━━━━━━━━━━━┓
+┃   2024-10-10   ┃
+┗━━━━━━━━━━━━━━━━┛
+
+I can't even remember what EM does.
+Let's see:
+- We've got Cowboy, EGRE and JSX, and my JS "lists" library as dependencies.
+
+  So, I'm guessing EM:
+  - starts the Cowboy web server
+  - listens for HTTP connections
+  - serves up the MUD web page
+  - handles websocket connections
+  - listens for JSON events
+  - runs those events through the graph
+  - sends messages back to the user through the web socket
+
+What would I test?
+- passing a JSON event to the graph
+- passing a message from the graph back to the websocket
+
+I mean, I do want to have some assurance that EM works: starts a graph,
+loads a world, ... it _would_ be nice to know that the web socket stuff works,
+but unless I'm using a real browser, that might not be all that valuable.
+
+  Cowboy is handling the websocket, so I can just focus on what comes from the
+  websocket, and assume that Cowboy is doing the right things.
+
+  A simple handler that takes a message and returns a message should do.
+  I don't need to make sure the graph works, since I test that in EGRE itself.
+
+  This layer is just a shim to load up rules and then recieve events from
+  a web socket.
+
+┏━━━━━━━━━━━━━━━━┓
 ┃   2024-03-28   ┃
 ┗━━━━━━━━━━━━━━━━┛
 
