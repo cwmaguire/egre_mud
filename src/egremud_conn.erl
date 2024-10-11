@@ -47,7 +47,7 @@ password(cast, _Event = Password, Data = #data{login = Login,
                                      egremud_handler_conn_send]}],
 
             Socket ! {send, <<"Login successful.">>},
-            {ok, ConnObjPid} = supervisor:start_child(egremud_object_sup, [_Id = undefined, ConnProps]),
+            {ok, ConnObjPid} = supervisor:start_child(egre_object_sup, [_Id = undefined, ConnProps]),
             % TODO Player is supposed to enter in a room
             Message = {PlayerPid, enter_world, in, room, with, ConnObjPid},
             ConnObjPid ! {ConnObjPid, Message},
@@ -74,8 +74,8 @@ dead({call, From}, props, _Data) ->
 live(cast, {send, Message}, _Data = #data{socket = Socket}) ->
     Socket ! {send, Message},
     keep_state_and_data;
-live(cast, Event, Data = #data{player = _PlayerPid, conn_obj = ConnObjPid}) ->
-    log([{event, Event}, {state, live}, {player, Data}, {conn, ConnObjPid}]),
+live(cast, Message, Data = #data{player = PlayerPid, conn_obj = ConnObjPid}) ->
+    log([{event, Message}, {state, live}, {player, Data}, {conn, ConnObjPid}]),
 
     % MUD should parse this, not the engine
     %_ = case egremud_parse:parse(PlayerPid, Event) of
@@ -84,6 +84,9 @@ live(cast, Event, Data = #data{player = _PlayerPid, conn_obj = ConnObjPid}) ->
     %    Message ->
     %        ConnObjPid ! {ConnObjPid, Message}
     %end,
+
+    ConnObjPid ! {ConnObjPid, {PlayerPid, Message}},
+
     {next_state, live, Data};
 live({call, {From, Ref}}, props, _Data) ->
     From ! {Ref, _Props = []},
