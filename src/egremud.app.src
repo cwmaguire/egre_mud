@@ -1,4 +1,4 @@
-{application, gerlshmud, [
+{application, egremud, [
   {description, ""},
   {vsn, "0.1.0"},
   {id, "git"},
