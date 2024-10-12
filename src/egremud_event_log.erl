@@ -3,7 +3,7 @@
 
 -behaviour(gen_server).
 
--include("egremud.hrl").
+-include_lib("egre/include/egre.hrl").
 
 -export([start_link/0]).
 -export([log/2]).
