@@ -15,5 +15,5 @@
     egre
   ]},
   {mod, {egremud_app, []}},
-  {env, []},
+  {env, []}
 ]}.
