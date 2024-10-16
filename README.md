@@ -3,6 +3,13 @@ EGRE_MUD - A MUD engine built on EGRE, the Erlang Graph Rules Engine
 EGRE_MUD is the go-between for EGRE, the graph rules engine, and any
 MUD that uses the rules engine.
 
+```mermaid
+flowchart TD
+    em1["egre_mud_1"] --> em["egre_mud"]
+    etd["egre_tower_defence"] --> ea["egre_arcade"]
+    em & ea --> e["egre"]
+```
+
 EGRE_MUD handles:
 - player connections through websockets
 - loading rules from a MUD (e.g. EGRE_MUD_1)
