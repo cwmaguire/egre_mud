@@ -12,6 +12,13 @@ EM1 = EGRE_MUD_1 - a reference MUD using EM
   0--0--0      0  0       0       0         0        0
 
 ┏━━━━━━━━━━━━━━━━┓
+┃   2024-10-12   ┃
+┗━━━━━━━━━━━━━━━━┛
+
+I've got the tests running in egre_mud_1 using egremud and egre as
+separate projects.
+
+┏━━━━━━━━━━━━━━━━┓
 ┃   2024-10-10   ┃
 ┗━━━━━━━━━━━━━━━━┛
 
