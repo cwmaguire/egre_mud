@@ -17,7 +17,8 @@
                conn_obj :: pid(),
                player :: pid(),
                login :: string(),
-               attempts = 0 :: integer()}).
+               attempts = 0 :: integer(),
+               parse_fun :: mfa()}).
 
 %% api
 
@@ -50,7 +51,9 @@ password(cast, _Event = Password, Data = #data{login = Login,
             {ok, ConnObjPid} = supervisor:start_child(egre_object_sup, [_Id = undefined, ConnProps]),
             % TODO Player is supposed to enter in a room
             Message = {PlayerPid, enter_world, in, room, with, ConnObjPid},
-            ConnObjPid ! {ConnObjPid, Message},
+
+            egre_object:attempt(ConnObjPid, Message),
+            %ConnObjPid ! {ConnObjPid, Message},
 
             {next_state, live, Data#data{login = undefined,
                                          player = PlayerPid,
@@ -98,9 +101,17 @@ live(Type, Event, Data) ->
 %% gen_statem
 
 init(Socket) ->
+    ParseFun =
+        case application:get_env(egre_mud, parse_fun) of
+            {ok, {M, F, A}} ->
+                fun M:F/A;
+            _ ->
+                fun(_, X) -> X end
+        end,
+
     Socket ! {send, <<"Welcome to egremud!">>},
     Socket ! {send, <<"Currently any login and password will do.">>},
-    {ok, login, #data{socket = Socket}}.
+    {ok, login, #data{socket = Socket, parse_fun = ParseFun}}.
 
 callback_mode() ->
     state_functions.
