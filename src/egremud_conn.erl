@@ -77,18 +77,19 @@ dead({call, From}, props, _Data) ->
 live(cast, {send, Message}, _Data = #data{socket = Socket}) ->
     Socket ! {send, Message},
     keep_state_and_data;
-live(cast, Message, Data = #data{player = PlayerPid, conn_obj = ConnObjPid}) ->
+live(cast, Message,
+     Data = #data{player = PlayerPid,
+                  conn_obj = ConnObjPid,
+                  parse_fun = ParseFun}) ->
     log([{event, Message}, {state, live}, {player, Data}, {conn, ConnObjPid}]),
 
     % MUD should parse this, not the engine
-    %_ = case egremud_parse:parse(PlayerPid, Event) of
-    %    {error, Error} ->
-    %        Data#data.socket ! {send, Error};
-    %    Message ->
-    %        ConnObjPid ! {ConnObjPid, Message}
-    %end,
-
-    ConnObjPid ! {ConnObjPid, {PlayerPid, Message}},
+   _ = case ParseFun(PlayerPid, Message) of
+       {error, Error} ->
+           Data#data.socket ! {send, Error};
+       Event ->
+           egre_object:attempt(ConnObjPid, Event)
+    end,
 
     {next_state, live, Data};
 live({call, {From, Ref}}, props, _Data) ->
