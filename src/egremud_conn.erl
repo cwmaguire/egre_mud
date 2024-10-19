@@ -103,12 +103,12 @@ live(Type, Event, Data) ->
 
 init(Socket) ->
     ParseFun =
-        case application:get_env(egre_mud, parse_fun) of
+        case application:get_env(egremud, parse_fun) of
             {ok, {M, F, A}} ->
                 fun M:F/A;
             _ ->
                 egremud_event_log:log(debug, [{error, <<"no parse fun specified">>}]),
-                Socket ! {send, <<"Error: no parse function. Contact admin.">>},
+                Socket ! {send, <<"Error: no parse function. Contact admin. SYSTEM ABEND '0D37'">>},
                 throw("No player input parse function")
         end,
 
