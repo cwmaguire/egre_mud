@@ -107,7 +107,9 @@ init(Socket) ->
             {ok, {M, F, A}} ->
                 fun M:F/A;
             _ ->
-                fun(_, X) -> X end
+                egremud_event_log:log(debug, [{error, <<"no parse fun specified">>}]),
+                Socket ! {send, <<"Error: no parse function. Contact admin.">>},
+                throw("No player input parse function")
         end,
 
     Socket ! {send, <<"Welcome to egremud!">>},
