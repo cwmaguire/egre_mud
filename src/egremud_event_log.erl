@@ -168,7 +168,7 @@ add_index_details({_Key = {Atom1, Atom2}, Pid}, NamedProps)
     Key = list_to_atom(Str1 ++ "_" ++ Str2),
     add_index_details({Key, Pid}, NamedProps);
 add_index_details({Key, Pid}, NamedProps) when is_pid(Pid) ->
-    case egre_index:get(Pid) of
+    case egre:get_object(Pid) of
         undefined ->
             NamedProps;
         #object{id = Id, icon = Icon} ->

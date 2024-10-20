@@ -41,18 +41,18 @@ password(cast, _Event = Password, Data = #data{login = Login,
             egremud_event_log:register(self());
         {true, _Player} ->
             % All players are live processes at MUD startup; processes are almost free
-            PlayerPid = egre_index:get_pid(player),
+            PlayerPid = egre:get_object_pid(player),
             ConnProps = [{owner, PlayerPid},
                          {conn, {self()}},
                          {rules, [rules_conn_enter_world,
                                   rules_conn_send]}],
 
             Socket ! {send, <<"Login successful.">>},
-            {ok, ConnObjPid} = supervisor:start_child(egre_object_sup, [_Id = undefined, ConnProps]),
+            ConnObjPid = egre:start_object(ConnProps),
             % TODO Player is supposed to enter in a room
             Message = {PlayerPid, enter_world, in, room, with, ConnObjPid},
 
-            egre_object:attempt(ConnObjPid, Message),
+            egre:attempt(ConnObjPid, Message),
             %ConnObjPid ! {ConnObjPid, Message},
 
             {next_state, live, Data#data{login = undefined,
@@ -88,7 +88,7 @@ live(cast, Message,
        {error, Error} ->
            Data#data.socket ! {send, Error};
        Event ->
-           egre_object:attempt(ConnObjPid, Event)
+           egre:attempt(ConnObjPid, Event)
     end,
 
     {next_state, live, Data};
@@ -108,7 +108,7 @@ init(Socket) ->
                 fun M:F/A;
             _ ->
                 egremud_event_log:log(debug, [{error, <<"no parse fun specified">>}]),
-                Socket ! {send, <<"Error: no parse function. Contact admin. SYSTEM ABEND '0D37'">>},
+                Socket ! {send, <<"Error: no parse function. Contact admin. SYSTEM ABEND '0513'">>},
                 throw("No player input parse function")
         end,
 
@@ -126,7 +126,7 @@ is_valid_creds("log", "log") ->
 is_valid_creds(_String, never_fails) ->
     false;
 is_valid_creds(_Login, _Password) ->
-    {true, egre_index:get_pid(player)}.
+    {true, egre:get_object_pid(player)}.
 
 log(Terms) ->
     egremud_event_log:log(debug, [list_to_binary(atom_to_list(?MODULE)) | Terms]).
