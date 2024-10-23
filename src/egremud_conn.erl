@@ -80,7 +80,7 @@ live(cast, {send, Message}, _Data = #data{socket = Socket}) ->
 live(cast, Message,
      Data = #data{player = PlayerPid,
                   conn_obj = ConnObjPid,
-                  parse_fun = ParseFun}) ->
+                  parse_fun = ParseFun}) when is_binary(Message) ->
     log([{event, Message}, {state, live}, {player, Data}, {conn, ConnObjPid}]),
 
     % MUD should parse this, not the engine
