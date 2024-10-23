@@ -52,6 +52,9 @@ password(cast, _Event = Password, Data = #data{login = Login,
             % TODO Player is supposed to enter in a room
             Message = {PlayerPid, enter_world, in, room, with, ConnObjPid},
 
+            ct:pal("egremud_conn: ~p, test socket: ~p, graph conn object: ~p, player: ~p~n",
+                   [self(), Socket, ConnObjPid, PlayerPid]),
+
             egre:attempt(ConnObjPid, Message),
             %ConnObjPid ! {ConnObjPid, Message},
 
@@ -88,7 +91,7 @@ live(cast, Message,
        {error, Error} ->
            Data#data.socket ! {send, Error};
        Event ->
-           egre:attempt(ConnObjPid, Event)
+           egre:attempt(ConnObjPid, Event, _Subscribe = false)
     end,
 
     {next_state, live, Data};
