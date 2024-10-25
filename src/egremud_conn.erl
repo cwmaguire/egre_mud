@@ -39,9 +39,8 @@ password(cast, _Event = Password, Data = #data{login = Login,
     case is_valid_creds(Login, Password) of
         {true, logger} ->
             egremud_event_log:register(self());
-        {true, _Player} ->
+        {true, PlayerPid} ->
             % All players are live processes at MUD startup; processes are almost free
-            PlayerPid = egre:get_object_pid(player),
             ConnProps = [{owner, PlayerPid},
                          {conn, {self()}},
                          {rules, [rules_conn_enter_world,
@@ -128,6 +127,8 @@ is_valid_creds("log", "log") ->
     {true, logger};
 is_valid_creds(_String, never_fails) ->
     false;
+is_valid_creds(<<"player2">>, _Password) ->
+    {true, egre:get_object_pid(player2)};
 is_valid_creds(_Login, _Password) ->
     {true, egre:get_object_pid(player)}.
 
