@@ -85,9 +85,10 @@ handle_cast({log, Pid, Level, Props}, State) when is_list(Props) ->
         ok = file:write(State#state.log_file, <<JSON/binary, "\n">>),
         JSON
     catch
-        Error ->
-            io:format(user, "~p caught error:~n\t~p~n", [?MODULE, Error]),
-            {error, Error}
+        Class:Exception ->
+            io:format(user, "~p caught exception:~n\t~p:~p~n\tBinProps: ~p~n",
+                      [?MODULE, Class, Exception, BinProps]),
+            {error, Exception}
     end,
     [call_logger(Logger, Level, JSON2) || Logger <- State#state.loggers],
     {noreply, State};
