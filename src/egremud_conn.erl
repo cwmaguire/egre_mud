@@ -18,7 +18,7 @@
                player :: pid(),
                login :: string(),
                attempts = 0 :: integer(),
-               parse_fun :: mfa()}).
+               parse_fun :: fun()}).
 
 %% api
 
