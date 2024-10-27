@@ -218,8 +218,6 @@ ts2b({Meg, Sec, Mic}) ->
 
 f2b(Fun) ->
   [{module, M}, {name, F}, {arity, A} | _] = erlang:fun_info(Fun),
-  io:format(user, "A = ~p~n", [A]),
-  io:format(user, "i2b(A) = ~p~n", [i2b(A)]),
   <<(atom_to_binary(M))/binary, ":",
     (atom_to_binary(F))/binary, "/",
     (i2b(A))/binary>>.
