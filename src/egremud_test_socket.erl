@@ -2,12 +2,9 @@
 -module(egremud_test_socket).
 -behaviour(gen_server).
 
--export([start/0]).
 -export([start/1]).
--export([stop/0]).
--export([send/1]).
+-export([stop/1]).
 -export([send/2]).
--export([messages/0]).
 -export([messages/1]).
 
 -export([init/1]).
@@ -20,23 +17,14 @@
 -record(state, {conn,
                 messages = [] :: [string()]}).
 
-start() ->
-    gen_server:start({local, ?MODULE}, ?MODULE, [], []).
-
 start(Name) ->
     gen_server:start({local, Name}, ?MODULE, [], []).
 
-stop() ->
-    gen_server:cast(?MODULE, stop).
-
-send(Msg) ->
-    gen_server:cast(?MODULE, Msg).
+stop(Name) ->
+    gen_server:cast(Name, stop).
 
 send(Name, Msg) ->
     gen_server:cast(Name, Msg).
-
-messages() ->
-    gen_server:call(?MODULE, messages).
 
 messages(Name) ->
     gen_server:call(Name, messages).
@@ -57,9 +45,12 @@ handle_cast(_Req = Text, State = #state{conn = Conn}) ->
     egremud_conn:handle(Conn, Text),
     {noreply, State}.
 
-handle_info({send, Msg}, State = #state{messages = Messages}) ->
-    ct:pal("Test socket ~p received: ~p~n", [self(), flatten(Msg)]),
-    {noreply, State#state{messages = [flatten(Msg) | Messages]}};
+handle_info({send, Msg}, State = #state{messages = Messages, conn = Conn}) ->
+    ct:pal("Socket {~p,~p} rx: ~p~n",
+           [self(), Conn, flatten(Msg)]),
+{noreply, State#state{messages = [flatten(Msg) | Messages]}};
+
+
 handle_info(_Req, State) ->
     {noreply, State}.
 
@@ -74,3 +65,5 @@ flatten(Output) when is_list(Output) ->
     lists:foldl(fun(Bin, Acc) -> <<Acc/binary, Bin/binary>> end, <<>>, ListOfBins);
 flatten(Output) ->
     Output.
+
+

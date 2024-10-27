@@ -123,14 +123,18 @@ callback_mode() ->
 
 %% private
 
+%% XXX Can we get strings here? Do we use this?
 is_valid_creds("log", "log") ->
     {true, logger};
+is_valid_creds(Login = <<"player", _Rest/binary>>, _Password) ->
+    Player = binary_to_existing_atom(Login),
+    {true, egre:get_object_pid(Player)};
 is_valid_creds(_String, never_fails) ->
     false;
-is_valid_creds(<<"player2">>, _Password) ->
-    {true, egre:get_object_pid(player2)};
-is_valid_creds(_Login, _Password) ->
-    {true, egre:get_object_pid(player)}.
+is_valid_creds(_, _) ->
+    false.
+
+
 
 log(Terms) ->
     egremud_event_log:log(debug, [list_to_binary(atom_to_list(?MODULE)) | Terms]).
