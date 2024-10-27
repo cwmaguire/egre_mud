@@ -14,11 +14,5 @@ init([]) ->
               permanent,
               brutal_kill,
               supervisor,
-              [egremud_conn_sup]},
-             {egremud_event_log,
-              {egremud_event_log, start_link, []},
-              permanent,
-              brutal_kill,
-              worker,
-              [egremud_event_log]}],
+              [egremud_conn_sup]}],
     {ok, {{one_for_one, 1, 5}, Procs}}.

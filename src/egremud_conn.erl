@@ -37,8 +37,6 @@ password(cast, _Event = Password, Data = #data{login = Login,
                                                attempts = Attempts,
                                                socket = Socket}) ->
     case is_valid_creds(Login, Password) of
-        {true, logger} ->
-            egremud_event_log:register(self());
         {true, PlayerPid} ->
             % All players are live processes at MUD startup; processes are almost free
             ConnProps = [{owner, PlayerPid},
@@ -109,7 +107,7 @@ init(Socket) ->
             {ok, {M, F, A}} ->
                 fun M:F/A;
             _ ->
-                egremud_event_log:log(debug, [{error, <<"no parse fun specified">>}]),
+                egre_event_log:log(debug, [{error, <<"no parse fun specified">>}]),
                 Socket ! {send, <<"Error: no parse function. Contact admin. SYSTEM ABEND '0513'">>},
                 throw("No player input parse function")
         end,
@@ -137,7 +135,7 @@ is_valid_creds(_, _) ->
 
 
 log(Terms) ->
-    egremud_event_log:log(debug, [list_to_binary(atom_to_list(?MODULE)) | Terms]).
+    egre_event_log:log(debug, [list_to_binary(atom_to_list(?MODULE)) | Terms]).
 
 console_log_unknown(State, EventType, EventData, _Data = #data{player = Player}) ->
     io:format("Connection ~p for player ~p received unrecognized event ~p:~p in state ~p",
