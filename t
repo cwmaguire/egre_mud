@@ -13,6 +13,12 @@ else
   exit
 fi
 
+echo "Copying EGRE files (src, include)"
+cp -u ~/dev/egre/src/* deps/egre/src/
+cp -u ~/dev/egre/include/* deps/egre/include/
+
+make FULL=1 all deps
+
 # Everything after -erl_args is ignored by CT
 CT_OPTS="-config test/test.config ${CASES} -erl_args -config rel/sys.config " \
   GERLSHMUD_LOG_PATH=$(pwd)/logs \
