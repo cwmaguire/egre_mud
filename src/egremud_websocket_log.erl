@@ -32,7 +32,7 @@ websocket_init(_Type, Req, _Opts) ->
     fun(_Level, JSON) ->
         Self ! JSON
     end,
-    egremud_event_log:register(Fun),
+    egre:register_logger(json, Fun),
 
     ?LOG_INFO("Websocket handler websocket_init end (~p)~n", [self()]),
     {ok, Req3, undefined}.
