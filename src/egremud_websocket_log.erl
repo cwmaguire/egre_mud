@@ -29,9 +29,9 @@ websocket_init(_Type, Req, _Opts) ->
 
     Self = self(),
     Fun =
-    fun(_Level, JSON) ->
-        Self ! JSON
-    end,
+        fun(_Level, JSON) ->
+            Self ! JSON
+        end,
     egre:register_logger(json, Fun),
 
     ?LOG_INFO("Websocket handler websocket_init end (~p)~n", [self()]),
