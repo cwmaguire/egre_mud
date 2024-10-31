@@ -49,11 +49,13 @@ password(cast, _Event = Password, Data = #data{login = Login,
             % TODO Player is supposed to enter in a room
             Message = {PlayerPid, enter_world, in, room, with, ConnObjPid},
 
-            ct:pal("egremud_conn: ~p, test socket: ~p, graph conn object: ~p, player: ~p~n",
+            ct:pal("player:            ~p~n"
+                   "test socket:       ~p~n"
+                   "egremud_conn:      ~p~n"
+                   "graph conn object: ~p",
                    [self(), Socket, ConnObjPid, PlayerPid]),
 
             egre:attempt(ConnObjPid, Message),
-            %ConnObjPid ! {ConnObjPid, Message},
 
             {next_state, live, Data#data{login = undefined,
                                          player = PlayerPid,
