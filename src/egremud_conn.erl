@@ -53,7 +53,7 @@ password(cast, _Event = Password, Data = #data{login = Login,
                    "test socket:       ~p~n"
                    "egremud_conn:      ~p~n"
                    "graph conn object: ~p",
-                   [self(), Socket, ConnObjPid, PlayerPid]),
+                   [PlayerPid, Socket, self(), ConnObjPid]),
 
             egre:attempt(ConnObjPid, Message),
 
